@@ -63,10 +63,22 @@
       margin: 0 10px;
       font-size: 16px;
     }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
   <h1>TriColor Sudoku</h1>
+  <div class="controls">
+    <select id="difficulty" onchange="generatePuzzle()">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="expert">Expert</option>
+    </select>
+  </div>
   <div class="sudoku-grid" id="sudoku-grid"></div>
   <div class="controls">
     <button onclick="checkSolution()">Check Solution</button>
@@ -77,17 +89,43 @@
   <script>
     const grid = document.getElementById('sudoku-grid');
 
-    const initialGrid = [
-      [5, 3, null, null, 7, null, null, null, null],
-      [6, null, null, 1, 9, 5, null, null, null],
-      [null, 9, 8, null, null, null, null, 6, null],
-      [8, null, null, null, 6, null, null, null, 3],
-      [4, null, null, 8, null, 3, null, null, 1],
-      [7, null, null, null, 2, null, null, null, 6],
-      [null, 6, null, null, null, null, 2, 8, null],
-      [null, null, null, 4, 1, 9, null, null, 5],
-      [null, null, null, null, 8, null, null, 7, 9],
-    ];
+    const puzzles = {
+      easy: [
+        [5, 3, null, null, 7, null, null, null, null],
+        [6, null, null, 1, 9, 5, null, null, null],
+        [null, 9, 8, null, null, null, null, 6, null],
+        [8, null, null, null, 6, null, null, null, 3],
+        [4, null, null, 8, null, 3, null, null, 1],
+        [7, null, null, null, 2, null, null, null, 6],
+        [null, 6, null, null, null, null, 2, 8, null],
+        [null, null, null, 4, 1, 9, null, null, 5],
+        [null, null, null, null, 8, null, null, 7, 9],
+      ],
+      medium: [
+        [null, null, 3, null, null, 8, null, 6, null],
+        [null, 8, null, null, 7, null, null, null, null],
+        [null, null, 1, 9, null, null, null, null, 5],
+        [null, null, null, null, 6, 4, null, null, null],
+        [null, 5, 8, null, null, null, 3, 1, null],
+        [null, null, null, 2, 8, null, null, null, null],
+        [8, null, null, null, null, 9, 7, null, null],
+        [null, null, null, null, 5, null, null, 2, null],
+        [null, 9, null, 4, null, null, 8, null, null],
+      ],
+      expert: [
+        [null, null, null, null, null, null, 7, null, 3],
+        [3, null, null, 9, null, null, null, null, null],
+        [null, 9, null, null, null, 5, null, null, null],
+        [null, null, null, null, null, 4, null, 7, null],
+        [null, null, null, 1, null, 9, null, null, null],
+        [null, 6, null, 8, null, null, null, null, null],
+        [null, null, null, 7, null, null, null, 5, null],
+        [null, null, null, null, null, 3, null, null, 8],
+        [5, null, 2, null, null, null, null, null, null],
+      ]
+    };
+
+    let currentPuzzle = [];
 
     const colors = [
       ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
@@ -101,10 +139,15 @@
       ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue']
     ];
 
-    function createGrid() {
-      grid.innerHTML = '';
+    function generatePuzzle() {
+      const difficulty = document.getElementById('difficulty').value;
+      currentPuzzle = JSON.parse(JSON.stringify(puzzles[difficulty]));
+      createGrid(currentPuzzle);
+    }
 
-      initialGrid.forEach((row, rowIndex) => {
+    function createGrid(puzzle) {
+      grid.innerHTML = '';
+      puzzle.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           const input = document.createElement('input');
           input.type = 'text';
@@ -177,7 +220,7 @@
     }
 
     function resetGrid() {
-      createGrid();
+      generatePuzzle();
     }
 
     function giveTip() {
@@ -187,7 +230,7 @@
         if (!cell.classList.contains('locked') && cell.value === '') {
           const row = Math.floor(i / 9);
           const col = i % 9;
-          const correctValue = initialGrid[row][col];
+          const correctValue = currentPuzzle[row][col];
           if (correctValue !== null) {
             alert(`Try placing ${correctValue} in row ${row + 1}, column ${col + 1}.`);
             return;
@@ -197,7 +240,7 @@
       alert('No tips available.');
     }
 
-    createGrid();
+    generatePuzzle();
   </script>
 </body>
 </html>
