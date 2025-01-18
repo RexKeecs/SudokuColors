@@ -89,8 +89,15 @@
     ];
 
     const colors = [
-      'red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue',
-      // Repeat for all rows or define regions dynamically
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue'],
+      ['red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue']
     ];
 
     function createGrid() {
@@ -102,7 +109,7 @@
           input.type = 'text';
           input.maxLength = 1;
           input.classList.add('cell');
-          input.classList.add(colors[rowIndex]);
+          input.classList.add(colors[rowIndex][colIndex]);
 
           if (cell !== null) {
             input.value = cell;
@@ -116,10 +123,56 @@
 
     function checkSolution() {
       const cells = Array.from(document.querySelectorAll('.cell'));
-      const values = cells.map(cell => parseInt(cell.value) || null);
+      const gridValues = [];
+      for (let i = 0; i < 9; i++) {
+        gridValues.push(cells.slice(i * 9, i * 9 + 9).map(cell => parseInt(cell.value) || null));
+      }
 
-      // Check rows, columns, and regions logic here
-      alert('Feature not implemented: Check solution logic.');
+      const isValidSet = (nums) => {
+        const filtered = nums.filter(n => n !== null);
+        return new Set(filtered).size === filtered.length && filtered.every(n => n >= 1 && n <= 9);
+      };
+
+      const checkRows = () => gridValues.every(row => isValidSet(row));
+
+      const checkColumns = () => {
+        for (let col = 0; col < 9; col++) {
+          const column = gridValues.map(row => row[col]);
+          if (!isValidSet(column)) return false;
+        }
+        return true;
+      };
+
+      const checkRegions = () => {
+        for (let row = 0; row < 9; row += 3) {
+          for (let col = 0; col < 9; col += 3) {
+            const region = [];
+            for (let r = row; r < row + 3; r++) {
+              for (let c = col; c < col + 3; c++) {
+                region.push(gridValues[r][c]);
+              }
+            }
+            if (!isValidSet(region)) return false;
+          }
+        }
+        return true;
+      };
+
+      const checkColors = () => {
+        const colorGroups = { red: [], green: [], blue: [] };
+        cells.forEach((cell, index) => {
+          const row = Math.floor(index / 9);
+          const col = index % 9;
+          colorGroups[colors[row][col]].push(parseInt(cell.value) || null);
+        });
+        return Object.values(colorGroups).every(group => isValidSet(group));
+      };
+
+      if (checkRows() && checkColumns() && checkRegions() && checkColors()) {
+        alert('Congratulations! You solved the puzzle correctly.');
+      } else {
+        alert('There are errors in your solution. Keep trying!');
+      }
     }
 
     function resetGrid() {
