@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TriColor Sudoku</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .sudoku-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 50px);
+      grid-template-rows: repeat(9, 50px);
+      gap: 2px;
+      background-color: #000;
+    }
+
+    .cell {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      font-size: 18px;
+      line-height: 50px;
+      border: none;
+      outline: none;
+    }
+
+    .cell.red {
+      background-color: #ffcccc;
+    }
+
+    .cell.green {
+      background-color: #ccffcc;
+    }
+
+    .cell.blue {
+      background-color: #ccccff;
+    }
+
+    .cell.locked {
+      background-color: #ddd;
+      pointer-events: none;
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 0 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>TriColor Sudoku</h1>
+  <div class="sudoku-grid" id="sudoku-grid"></div>
+  <div class="controls">
+    <button onclick="checkSolution()">Check Solution</button>
+    <button onclick="resetGrid()">Reset</button>
+  </div>
+
+  <script>
+    const grid = document.getElementById('sudoku-grid');
+
+    const initialGrid = [
+      [5, 3, null, null, 7, null, null, null, null],
+      [6, null, null, 1, 9, 5, null, null, null],
+      [null, 9, 8, null, null, null, null, 6, null],
+      [8, null, null, null, 6, null, null, null, 3],
+      [4, null, null, 8, null, 3, null, null, 1],
+      [7, null, null, null, 2, null, null, null, 6],
+      [null, 6, null, null, null, null, 2, 8, null],
+      [null, null, null, 4, 1, 9, null, null, 5],
+      [null, null, null, null, 8, null, null, 7, 9],
+    ];
+
+    const colors = [
+      'red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue',
+      // Repeat for all rows or define regions dynamically
+    ];
+
+    function createGrid() {
+      grid.innerHTML = '';
+
+      initialGrid.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.maxLength = 1;
+          input.classList.add('cell');
+          input.classList.add(colors[rowIndex]);
+
+          if (cell !== null) {
+            input.value = cell;
+            input.classList.add('locked');
+          }
+
+          grid.appendChild(input);
+        });
+      });
+    }
+
+    function checkSolution() {
+      const cells = Array.from(document.querySelectorAll('.cell'));
+      const values = cells.map(cell => parseInt(cell.value) || null);
+
+      // Check rows, columns, and regions logic here
+      alert('Feature not implemented: Check solution logic.');
+    }
+
+    function resetGrid() {
+      createGrid();
+    }
+
+    createGrid();
+  </script>
+</body>
+</html>
