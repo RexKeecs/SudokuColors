@@ -71,6 +71,7 @@
   <div class="controls">
     <button onclick="checkSolution()">Check Solution</button>
     <button onclick="resetGrid()">Reset</button>
+    <button onclick="giveTip()">Get a Tip</button>
   </div>
 
   <script>
@@ -177,6 +178,23 @@
 
     function resetGrid() {
       createGrid();
+    }
+
+    function giveTip() {
+      const cells = Array.from(document.querySelectorAll('.cell'));
+      for (let i = 0; i < 81; i++) {
+        const cell = cells[i];
+        if (!cell.classList.contains('locked') && cell.value === '') {
+          const row = Math.floor(i / 9);
+          const col = i % 9;
+          const correctValue = initialGrid[row][col];
+          if (correctValue !== null) {
+            alert(`Try placing ${correctValue} in row ${row + 1}, column ${col + 1}.`);
+            return;
+          }
+        }
+      }
+      alert('No tips available.');
     }
 
     createGrid();
